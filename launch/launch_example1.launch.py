@@ -25,7 +25,7 @@ def generate_launch_description():
             ]
         ),
         # Node(
-        #     package='ros2_cpp_template',
+        #     package='temperature_monitoring',
         #     executable='simple_sub_node',
         #     output='screen',
         # ),
