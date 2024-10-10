@@ -6,34 +6,19 @@
 class TemperatureSubscriber : public rclcpp::Node
 {
 public:
-    TemperatureSubscriber(int days) : Node("temperature_subscriber"), days_to_simulate(days), current_day(0)
+    TemperatureSubscriber(int days) : Node("temperature_subscriber_node"), days_to_simulate(days), current_day(0)
     {
         subscription_ = this->create_subscription<std_msgs::msg::Float32>(
             "temperature", 10, std::bind(&TemperatureSubscriber::temperature_callback, this, std::placeholders::_1));
-        
-        // Simulate one temperature reading per hour (24 readings per day)
-        timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&TemperatureSubscriber::simulate_day, this));
+
+        // Simulate one temperature reading per day (set to 1 second for testing purposes)
+        timer_ = this->create_wall_timer(std::chrono::seconds(1), std::bind(&TemperatureSubscriber::simulate_day, this));
     }
 
 private:
     void temperature_callback(const std_msgs::msg::Float32::SharedPtr msg)
     {
-        float temp = msg->data;
-        
-        if (temp < 18.0)
-        {
-            RCLCPP_INFO(this->get_logger(), "Temperature: %.2f°C - LOW", temp);
-        }
-        else if (temp >= 18.0 && temp <= 25.0)
-        {
-            RCLCPP_INFO(this->get_logger(), "Temperature: %.2f°C - NORMAL", temp);
-        }
-        else
-        {
-            RCLCPP_INFO(this->get_logger(), "Temperature: %.2f°C - HIGH", temp);
-        }
-
-        recorded_temperatures.push_back(temp);
+        recorded_temperature = msg->data;
     }
 
     void simulate_day()
@@ -41,7 +26,19 @@ private:
         if (current_day < days_to_simulate)
         {
             current_day++;
-            RCLCPP_INFO(this->get_logger(), "Simulating day %d out of %d...", current_day, days_to_simulate);
+            // Print only the necessary information (temperature and day status)
+            if (recorded_temperature < 18.0)
+            {
+                RCLCPP_INFO(this->get_logger(), "Day %d: Temperature %.2f°C - LOW", current_day, recorded_temperature);
+            }
+            else if (recorded_temperature >= 18.0 && recorded_temperature <= 25.0)
+            {
+                RCLCPP_INFO(this->get_logger(), "Day %d: Temperature %.2f°C - NORMAL", current_day, recorded_temperature);
+            }
+            else
+            {
+                RCLCPP_INFO(this->get_logger(), "Day %d: Temperature %.2f°C - HIGH", current_day, recorded_temperature);
+            }
         }
         else
         {
@@ -53,12 +50,12 @@ private:
 
     void generate_graph()
     {
-        // TODO: make a graph
+        // TODO: Implement code to generate a graph
     }
 
     rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr subscription_;
     rclcpp::TimerBase::SharedPtr timer_;
-    std::vector<float> recorded_temperatures;
+    float recorded_temperature = 0.0;
 
     int days_to_simulate;
     int current_day;
