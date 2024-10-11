@@ -1,6 +1,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float32.hpp>
-#include <random>  // For random number generation
+#include <random>
 
 class TemperaturePublisher : public rclcpp::Node
 {
