@@ -9,7 +9,7 @@ It is assumed that the workspace is `~/ros2_ws/`.
 cd ~/ros2_ws/src
 ```
 ``` r
-git clone https://github.com/Levente011/temperature_monitoring
+git clone https://github.com/Levente011/sze_a0t_temperature_monitoring.git
 ```
 
 ### Build ROS 2 packages
@@ -29,5 +29,5 @@ source ~/ros2_ws/install/setup.bash
 </details>
 
 ``` r
-ros2 launch temperature_monitoring launch_example1.launch.py
+ros2 launch temperature_monitoring temperature_monitoring.launch.py
 ```
